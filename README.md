@@ -1,8 +1,6 @@
 # compose-exoplayer-LazyColumn-example
 A video player of exoplayer on LazyColumn(list view) of Jetpack Compose. Codes are structured with MVVM and modularization. 
 
-Related Blog - [Jetpack Compose with Exoplayer, Hilt, MVVM and Modularization](todo)
-
 This project shows a example of using Exoplayer with Jetpack Compose.
 
 Here are the features included:
@@ -28,6 +26,9 @@ The application has two screens(two pages).
 1. Main page screen - List of Videos and the videos can play on the list directly. See the [MainPageScreen.kt]() for detail.
 2. Video detail screen - One Video in a detail page with detail description. See the [VideoDetailScreen.kt]() for detail
 
+![sample1](https://user-images.githubusercontent.com/7666419/188545640-9548c6db-808b-4714-a185-537867ca7f43.jpg)
+![sample2](https://user-images.githubusercontent.com/7666419/188564548-8a66d2ee-867c-4a95-acd9-76ec46b07ea6.jpg)
+![sample3](https://user-images.githubusercontent.com/7666419/188564607-3a36281f-2652-4f37-a54b-e41a713e4e06.jpg)
 
 # About
 * Thanks [Compose-sliders](https://github.com/krottv/compose-sliders) for the custom seek bar.
