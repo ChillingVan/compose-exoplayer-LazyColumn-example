@@ -1,6 +1,8 @@
 # compose-exoplayer-LazyColumn-example
 A video player of exoplayer on LazyColumn(list view) of Jetpack Compose. Codes are structured with MVVM and modularization. 
 
+Related Blog - [Jetpack Compose with Exoplayer, Hilt, MVVM and Modularization](https://medium.com/p/4371a0a5a0d0)
+
 This project shows a example of using Exoplayer with Jetpack Compose.
 
 Here are the features included:
