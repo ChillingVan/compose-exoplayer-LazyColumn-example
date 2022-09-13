@@ -1,7 +1,7 @@
 package com.chillingvan.samples.composevideo.main.model
 
+import com.chillingvan.samples.composevideo.main.R
 import com.chillingvan.samples.composevideo.video.CoreVideoPlayer
-import com.chillingvan.samples.composevideo.video.VideoSingleton
 import javax.inject.Inject
 
 /**
@@ -21,22 +21,26 @@ class VideoItemsRepository @Inject constructor() {
             VideoStateItemData(
                 1234,
                 title = "First Video",
-                url = "https://v-cdn.zjol.com.cn/280123.mp4"
+                url = "https://v-cdn.zjol.com.cn/280123.mp4",
+                cover = R.drawable.first_video
             ),
             VideoStateItemData(
                 1235,
                 title = "Second Video",
-                url = "https://media.w3.org/2010/05/sintel/trailer.mp4"
+                url = "https://media.w3.org/2010/05/sintel/trailer.mp4",
+                cover = R.drawable.second_video
             ),
             VideoStateItemData(
                 1236,
                 title = "Third Video",
-                url = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
+                url = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm",
+                cover = R.drawable.third_video
             ),
             VideoStateItemData(
                 1237,
                 title = "Fourth",
-                url = "http://techslides.com/demos/sample-videos/small.mp4"
+                url = "http://techslides.com/demos/sample-videos/small.mp4",
+                cover = R.drawable.fourth_video
             ),
         )
         for (stateData in obtainList) {

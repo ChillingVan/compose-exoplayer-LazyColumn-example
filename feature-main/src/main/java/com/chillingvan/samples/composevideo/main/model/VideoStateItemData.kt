@@ -11,6 +11,7 @@ data class VideoStateItemData(
     val title: String,
     var state: VideoState = VideoState.Released,
     val url: String,
+    val cover: Int? = null,
     var player: CoreVideoPlayer? = null,
     var triggerResume: Boolean = false
 ): ListItemData
