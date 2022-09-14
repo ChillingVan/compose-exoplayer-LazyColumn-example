@@ -28,7 +28,7 @@ The application has two screens(two pages).
 1. Main page screen - List of Videos and the videos can play on the list directly. See the [MainPageScreen.kt]() for detail.
 2. Video detail screen - One Video in a detail page with detail description. See the [VideoDetailScreen.kt]() for detail
 
-![sample1](https://user-images.githubusercontent.com/7666419/190074123-6b227c52-4339-4ca7-8fc6-58bde3a0a56c.jpg)
+![sample1](https://user-images.githubusercontent.com/7666419/190075315-64b0c3fc-0c09-4c9a-905a-f54e62898cf9.jpg)
 ![sample2](https://user-images.githubusercontent.com/7666419/188564548-8a66d2ee-867c-4a95-acd9-76ec46b07ea6.jpg)
 ![sample3](https://user-images.githubusercontent.com/7666419/188564607-3a36281f-2652-4f37-a54b-e41a713e4e06.jpg)
 
