@@ -25,8 +25,8 @@ Here are the features included:
 # Pages
 
 The application has two screens(two pages).
-1. Main page screen - List of Videos and the videos can play on the list directly. See the [MainPageScreen.kt]() for detail.
-2. Video detail screen - One Video in a detail page with detail description. See the [VideoDetailScreen.kt]() for detail
+1. Main page screen - List of Videos and the videos can play on the list directly. See the [MainPageScreen.kt](feature-main/src/main/java/com/chillingvan/samples/composevideo/main/MainPageScreen.kt) for detail.
+2. Video detail screen - One Video in a detail page with detail description. See the [VideoDetailScreen.kt](feature-videodetail/src/main/java/com/chillingvan/samples/composevideo/videodetail/VideoDetailScreen.kt) for detail
 
 ![sample1](https://user-images.githubusercontent.com/7666419/190075315-64b0c3fc-0c09-4c9a-905a-f54e62898cf9.jpg)
 ![sample2](https://user-images.githubusercontent.com/7666419/188564548-8a66d2ee-867c-4a95-acd9-76ec46b07ea6.jpg)
