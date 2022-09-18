@@ -4,12 +4,10 @@ import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -17,13 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +41,8 @@ import com.chillingvan.samples.composevideo.video.CoreVideoView
 import com.chillingvan.samples.composevideo.video.rememberFullScreenController
 import com.chillingvan.samples.composevideo.core.navigation.VideoDetailNavParam
 import java.net.URLEncoder
+
+private const val TAG = "MainPageScreen"
 
 /**
  * Created by Chilling on 2022/7/20.
@@ -156,9 +154,9 @@ private fun VideoList(
                 val viewportSize = listenList.layoutInfo.viewportSize
                 val totalItemsCount = listenList.layoutInfo.totalItemsCount
                 val visibleItemsInfo = listenList.layoutInfo.visibleItemsInfo
-                Log.i("MainPageScreen", "ScrollIdle:viewportStartOffset=$viewportStartOffset, viewportEndOffset=$viewportEndOffset, viewportSize=$viewportSize, totalItemsCount=$totalItemsCount")
+                Log.i(TAG, "ScrollIdle:viewportStartOffset=$viewportStartOffset, viewportEndOffset=$viewportEndOffset, viewportSize=$viewportSize, totalItemsCount=$totalItemsCount")
                 for (itemInfo in visibleItemsInfo) {
-                    Log.i("MainPageScreen", "itemInfo:key=${itemInfo.key},index=${itemInfo.index},offset=${itemInfo.offset},size=${itemInfo.size}")
+                    Log.i(TAG, "itemInfo:key=${itemInfo.key},index=${itemInfo.index},offset=${itemInfo.offset},size=${itemInfo.size}")
                     val visibleEnoughSize = itemInfo.size * 0.7f
                     val endEdge = itemInfo.offset + itemInfo.size
                     val isVisibleEnough = (endEdge - viewportStartOffset) > visibleEnoughSize && (endEdge - viewportEndOffset) < (itemInfo.size - visibleEnoughSize)
@@ -170,6 +168,7 @@ private fun VideoList(
             }
         }
     }
+    Log.i(TAG, "Scroll: recompose")
     LazyColumn(state = listenList) {
         items(
             listState.value!!.list
@@ -233,7 +232,7 @@ private fun VideoItemView(
                 .onGloballyPositioned { layoutCoordinates ->
                     val top = layoutCoordinates.positionInParent().y
                     val height = layoutCoordinates.size.height
-                    Log.i("MainPageScreen", "VideoViewPosition:top=$top, height=$height")
+                    Log.i(TAG, "VideoViewPosition:top=$top, height=$height")
                 },
         ) {
             val fullScreenController = rememberFullScreenController()
