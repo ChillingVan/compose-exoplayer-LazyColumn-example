@@ -43,6 +43,8 @@ rootProject.name = "composevideo"
 include(":app")
 include(":core-ui")
 include(":core-navigation")
+include(":i-core-video")
 include(":core-video")
+include(":core-testing")
 include(":feature-main")
 include(":feature-videodetail")

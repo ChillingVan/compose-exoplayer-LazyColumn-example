@@ -15,17 +15,30 @@
  */
 plugins {
     id("nowinandroid.android.library")
-    id("nowinandroid.android.feature")
-    id("nowinandroid.android.library.compose")
-    id("nowinandroid.android.library.jacoco")
-    id("dagger.hilt.android.plugin")
+    kotlin("kapt")
     id("nowinandroid.spotless")
 }
 
 dependencies {
-    api(project(":i-core-video"))
-    implementation(libs.exoplayer)
-    implementation(libs.systemuicontroller)
+//    implementation(project(":core-common"))
+//    implementation(project(":core-data"))
+//    implementation(project(":core-model"))
+    implementation(project(":i-core-video"))
 
-    implementation(libs.androidx.compose.runtime.livedata)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
+    api(libs.junit4)
+    api(libs.androidx.test.core)
+    api(libs.kotlinx.coroutines.test)
+    api(libs.turbine)
+
+    api(libs.androidx.test.espresso.core)
+    api(libs.androidx.test.runner)
+    api(libs.androidx.test.rules)
+    api(libs.androidx.compose.ui.test)
+    api(libs.hilt.android.testing)
+    api(libs.androidx.arch.test.core)
+
+    debugApi(libs.androidx.compose.ui.testManifest)
 }

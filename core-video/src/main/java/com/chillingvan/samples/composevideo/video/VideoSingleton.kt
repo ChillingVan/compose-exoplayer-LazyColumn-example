@@ -53,7 +53,7 @@ class VideoSingleton  @Inject constructor(
         mPositionRecorder.progressRecordStart()
     }
 
-    fun play(playParam: PlayParam) {
+    override fun play(playParam: PlayParam) {
         val mediaItem = MediaItem.Builder()
             .setUri(playParam.url)
             .setMediaId(playParam.vid.toString())
@@ -74,11 +74,11 @@ class VideoSingleton  @Inject constructor(
         }
     }
 
-    fun pause() {
+    override fun pause() {
         exoPlayer.playWhenReady = false
     }
 
-    fun release() {
+    override fun release() {
         exoPlayer.release()
     }
 
@@ -132,5 +132,3 @@ class VideoSingleton  @Inject constructor(
         }
     }
 }
-
-data class PlayParam(val vid: Long, val url: String)

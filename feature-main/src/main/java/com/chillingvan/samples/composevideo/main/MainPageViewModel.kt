@@ -19,7 +19,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MainPageViewModel @Inject constructor(
-    private val videoSingleton: VideoSingleton,
+    private val videoSingleton: CoreVideoPlayer,
     private val videoRepository: VideoItemsRepository
 ) : ViewModel() {
 

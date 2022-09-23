@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    id("nowinandroid.android.library")
-    id("nowinandroid.android.feature")
-    id("nowinandroid.android.library.compose")
-    id("nowinandroid.android.library.jacoco")
-    id("dagger.hilt.android.plugin")
-    id("nowinandroid.spotless")
-}
 
-dependencies {
-    api(project(":i-core-video"))
-    implementation(libs.exoplayer)
-    implementation(libs.systemuicontroller)
+package com.google.samples.apps.nowinandroid.core.testing.di
 
-    implementation(libs.androidx.compose.runtime.livedata)
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+
+@Module
+@InstallIn(SingletonComponent::class)
+object TestDispatcherModule {
+    @Provides
+    @Singleton
+    fun providesTestDispatcher(): TestDispatcher = UnconfinedTestDispatcher()
 }

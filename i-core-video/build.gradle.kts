@@ -15,17 +15,12 @@
  */
 plugins {
     id("nowinandroid.android.library")
-    id("nowinandroid.android.feature")
-    id("nowinandroid.android.library.compose")
-    id("nowinandroid.android.library.jacoco")
+    kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("nowinandroid.spotless")
 }
 
 dependencies {
-    api(project(":i-core-video"))
-    implementation(libs.exoplayer)
-    implementation(libs.systemuicontroller)
-
-    implementation(libs.androidx.compose.runtime.livedata)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }

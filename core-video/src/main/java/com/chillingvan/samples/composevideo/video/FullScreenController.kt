@@ -22,11 +22,6 @@ fun rememberFullScreenController(): IFullScreenController {
     return remember(context) { FullScreenController(context, systemUiController) }
 }
 
-interface IFullScreenController {
-    fun toFull()
-    fun toPortrait()
-}
-
 class FullScreenController(private val context: Context, private val mSystemUiController: SystemUiController) : IFullScreenController {
     override fun toFull() {
         // SystemUIController cannot keep hiding status bar. But we keep here and let's wait for later update since it's still alpha now.

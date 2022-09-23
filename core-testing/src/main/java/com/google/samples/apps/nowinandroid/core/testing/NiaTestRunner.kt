@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    id("nowinandroid.android.library")
-    id("nowinandroid.android.feature")
-    id("nowinandroid.android.library.compose")
-    id("nowinandroid.android.library.jacoco")
-    id("dagger.hilt.android.plugin")
-    id("nowinandroid.spotless")
-}
 
-dependencies {
-    api(project(":i-core-video"))
-    implementation(libs.exoplayer)
-    implementation(libs.systemuicontroller)
+package com.google.samples.apps.nowinandroid.core.testing
 
-    implementation(libs.androidx.compose.runtime.livedata)
+import android.app.Application
+import android.content.Context
+import androidx.test.runner.AndroidJUnitRunner
+import dagger.hilt.android.testing.HiltTestApplication
+
+/**
+ * A custom runner to set up the instrumented application class for tests.
+ */
+class NiaTestRunner : AndroidJUnitRunner() {
+    override fun newApplication(cl: ClassLoader?, name: String?, context: Context?): Application {
+        return super.newApplication(cl, HiltTestApplication::class.java.name, context)
+    }
 }

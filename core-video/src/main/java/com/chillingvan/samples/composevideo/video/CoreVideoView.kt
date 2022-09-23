@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
 
 /**
@@ -21,7 +22,7 @@ fun CoreVideoView(modifier: Modifier = Modifier,
                 playerView.controllerAutoShow = false
                 playerView.setShowNextButton(false)
                 playerView.setShowPreviousButton(false)
-                playerView.player = coreVideoPlayer.getPlayer()
+                playerView.player = coreVideoPlayer.getPlayer() as? Player
                 coreVideoPlayer.bindVideoView(playerView)
             }
         },
