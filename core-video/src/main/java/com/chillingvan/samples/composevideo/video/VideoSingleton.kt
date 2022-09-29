@@ -21,16 +21,21 @@ import kotlin.coroutines.EmptyCoroutineContext
  */
 @Singleton
 class VideoSingleton  @Inject constructor(
-    application: Application
+    private val application: Application
 ): CoreVideoPlayer {
 
     companion object {
         private const val TAG = "VideoSingleton"
     }
 
-    private val exoPlayer = ExoPlayer.Builder(application.applicationContext).build()
+    private var exoPlayer = createPlayer(application)
+
+    private fun createPlayer(application: Application) =
+        ExoPlayer.Builder(application.applicationContext).build()
+
     private var mPlayerView: View? = null
     private val mPositionRecorder = PositionRecorder(this)
+    private var mIsReleased = false
 
     init {
         exoPlayer.addListener(object : Player.Listener {
@@ -54,6 +59,10 @@ class VideoSingleton  @Inject constructor(
     }
 
     override fun play(playParam: PlayParam) {
+        if (mIsReleased) {
+            mIsReleased = false
+            exoPlayer = createPlayer(application)
+        }
         val mediaItem = MediaItem.Builder()
             .setUri(playParam.url)
             .setMediaId(playParam.vid.toString())
@@ -80,6 +89,7 @@ class VideoSingleton  @Inject constructor(
 
     override fun release() {
         exoPlayer.release()
+        mIsReleased = true
     }
 
     override fun getPlayer(): Player = exoPlayer
