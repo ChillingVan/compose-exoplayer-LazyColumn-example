@@ -13,6 +13,7 @@ Here are the features included:
 * Play consecutively between List Page and Detail Page.
 * Codes are organized and modularized.
 * Use MVVM design pattern.
+* Support vertical pager in the video detail page to allow scrolling up and down to switch videos
 
 # Modules
 * app: The app entry - contains something like the Application and MainActivity.
