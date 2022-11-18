@@ -24,7 +24,7 @@ class VideoDetailRepository @Inject constructor()  {
                 item0.vid,
                 title = item0.title,
                 url = item0.url,
-                "The data sources from Internet. You can change it in VideoItemsRepository.kt."
+                "The data sources from Internet. You can change it in VideoTestData.kt."
             ),
             VideoDetailItemData(
                 item1.vid,
