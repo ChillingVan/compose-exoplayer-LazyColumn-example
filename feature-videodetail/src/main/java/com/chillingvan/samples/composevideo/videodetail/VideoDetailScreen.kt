@@ -121,7 +121,7 @@ private fun DetailPager(onPageChange: (Int) -> Unit, onBackClick: () -> Unit) {
     val videoDetailViewModel: VideoDetailViewModel = hiltViewModel()
     val title = videoDetailViewModel.getTitle()
     val detailListState = videoDetailViewModel.getListLiveData().observeAsState()
-    val curDetailData = videoDetailViewModel.getDetailData()
+    val enterDetailData = videoDetailViewModel.getEnterDetailData()
     val detailList = detailListState.value?.dataList
     detailList?.let { dataList ->
         val pagerState =
@@ -145,7 +145,7 @@ private fun DetailPager(onPageChange: (Int) -> Unit, onBackClick: () -> Unit) {
                 modifier = Modifier,
                 coreVideoPlayer = itemData.player,
                 onBackClick = onBackClick,
-                title = if (itemData.vid == curDetailData?.vid) title else itemData.title,
+                title = if (itemData.vid == enterDetailData?.vid) title else itemData.title,
                 detailData = itemData
             )
         }

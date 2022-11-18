@@ -10,6 +10,7 @@ import com.chillingvan.samples.composevideo.video.PlayParam
 import com.chillingvan.samples.composevideo.video.VideoSingleton
 import com.chillingvan.samples.composevideo.videodetail.navigation.VideoDetailDestination
 import com.chillingvan.samples.composevideo.core.navigation.VideoDetailContinueData
+import com.chillingvan.samples.composevideo.video.VideoState
 import com.chillingvan.samples.composevideo.videodetail.model.VideoDetailItemData
 import com.chillingvan.samples.composevideo.videodetail.model.VideoDetailListStateData
 import com.chillingvan.samples.composevideo.videodetail.model.VideoDetailRepository
@@ -74,7 +75,7 @@ class VideoDetailViewModel @Inject constructor(
 
     fun getTitle() = mTitle
 
-    fun getDetailData(): VideoDetailItemData? {
+    fun getEnterDetailData(): VideoDetailItemData? {
         return mVideoDetailRepository.getDetailData(mVid)
     }
 
@@ -93,6 +94,8 @@ class VideoDetailViewModel @Inject constructor(
         super.onCleared()
         Log.i(TAG, "onCleared")
         videoSingleton.bindVideoView(null)
-        VideoDetailContinueData.produce(VideoDetailContinueData.ContinueData(mVid))
+        mVideoDetailRepository.getDataList().find { it.state == VideoState.Playing }?.let {
+            VideoDetailContinueData.produce(VideoDetailContinueData.ContinueData(it.vid))
+        }
     }
 }
