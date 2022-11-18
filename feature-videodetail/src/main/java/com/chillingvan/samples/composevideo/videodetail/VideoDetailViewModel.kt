@@ -1,6 +1,8 @@
 package com.chillingvan.samples.composevideo.videodetail
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.chillingvan.samples.composevideo.video.CoreVideoPlayer
@@ -8,7 +10,8 @@ import com.chillingvan.samples.composevideo.video.PlayParam
 import com.chillingvan.samples.composevideo.video.VideoSingleton
 import com.chillingvan.samples.composevideo.videodetail.navigation.VideoDetailDestination
 import com.chillingvan.samples.composevideo.core.navigation.VideoDetailContinueData
-import com.chillingvan.samples.composevideo.videodetail.model.VideoDetailData
+import com.chillingvan.samples.composevideo.videodetail.model.VideoDetailItemData
+import com.chillingvan.samples.composevideo.videodetail.model.VideoDetailListStateData
 import com.chillingvan.samples.composevideo.videodetail.model.VideoDetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.net.URLDecoder
@@ -43,8 +46,12 @@ class VideoDetailViewModel @Inject constructor(
         ), Charsets.UTF_8.name()
     )
 
+    private val mListLiveData = MutableLiveData<VideoDetailListStateData>()
+
     init {
         play(PlayParam(mVid, mUrl))
+        mVideoDetailRepository.initPlayingItem(mVid, videoSingleton)
+        mListLiveData.value = VideoDetailListStateData(mVideoDetailRepository.getDataList(), 0)
     }
 
     private fun play(playParam: PlayParam) {
@@ -67,8 +74,19 @@ class VideoDetailViewModel @Inject constructor(
 
     fun getTitle() = mTitle
 
-    fun getDetailData(): VideoDetailData? {
+    fun getDetailData(): VideoDetailItemData? {
         return mVideoDetailRepository.getDetailData(mVid)
+    }
+
+    fun getListLiveData(): LiveData<VideoDetailListStateData> = mListLiveData
+
+    fun changePlayingItem(page: Int) {
+        Log.i(TAG, "changePlayingItem:page=$page")
+        val itemData: VideoDetailItemData = mVideoDetailRepository.getDataList()[page]
+        mVideoDetailRepository.recreateList()
+        mVideoDetailRepository.initPlayingItem(itemData.vid, videoSingleton)
+        mListLiveData.value = VideoDetailListStateData(mVideoDetailRepository.getDataList(), (mListLiveData.value?.changeCnt ?: 0) + 1)
+        play(PlayParam(itemData.vid, itemData.url, replayIfEnd = true))
     }
 
     override fun onCleared() {

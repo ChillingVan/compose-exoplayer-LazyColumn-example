@@ -74,7 +74,12 @@ class VideoSingleton  @Inject constructor(
 //        exoPlayer.release()
         exoPlayer.prepare()
         exoPlayer.play()
-        exoPlayer.seekTo(mPositionRecorder.getProgress(mediaItem.mediaId).toLong())
+        val progress = mPositionRecorder.getProgress(mediaItem.mediaId)
+        if (playParam.replayIfEnd && progress >= mPositionRecorder.getDuration(mediaItem.mediaId) - 1000) {
+            exoPlayer.seekTo(0)
+        } else {
+            exoPlayer.seekTo(progress.toLong())
+        }
     }
 
     override fun resume() {
@@ -117,7 +122,7 @@ class VideoSingleton  @Inject constructor(
     }
 
     private class PositionRecorder(private val player: VideoSingleton) {
-        private val mCache: LruCache<String, Int> = LruCache(10)
+        private val mCache: LruCache<String, ProgressData> = LruCache(10)
 
         private object PositionRecorderScope : CoroutineScope {
             /**
@@ -131,14 +136,20 @@ class VideoSingleton  @Inject constructor(
             PositionRecorderScope.launch(Dispatchers.Main) {
                 player.progressChangeFlow().collect { progress ->
                     player.exoPlayer.currentMediaItem?.let {
-                        mCache.put(it.mediaId, progress)
+                        mCache.put(it.mediaId, ProgressData(progress, player.exoPlayer.duration))
                     }
                 }
             }
         }
 
         fun getProgress(mediaId: String): Int {
-            return mCache[mediaId] ?: 0
+            return mCache[mediaId]?.progress ?: 0
         }
+
+        fun getDuration(mediaId: String): Long {
+            return mCache[mediaId]?.duration ?: 0L
+        }
+
+        private data class ProgressData(val progress: Int, val duration: Long)
     }
 }

@@ -2,6 +2,7 @@ package com.chillingvan.samples.composevideo.main.model
 
 import com.chillingvan.samples.composevideo.core.ui.list.ListItemData
 import com.chillingvan.samples.composevideo.video.CoreVideoPlayer
+import com.chillingvan.samples.composevideo.video.VideoState
 
 /**
  * Created by Chilling on 2022/7/28.
@@ -17,12 +18,6 @@ data class VideoStateItemData(
 ): ListItemData
 
 class BottomTakeUpData : ListItemData
-
-sealed class VideoState {
-    object Playing : VideoState()
-    object Pausing : VideoState()
-    object Released : VideoState()
-}
 
 data class ListStateData(
     private val inputList: List<ListItemData>,

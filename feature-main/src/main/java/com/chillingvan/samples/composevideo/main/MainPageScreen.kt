@@ -36,10 +36,10 @@ import com.chillingvan.samples.composevideo.core.ui.video.FullScreenView
 import com.chillingvan.samples.composevideo.core.ui.video.PlayControlView
 import com.chillingvan.samples.composevideo.main.model.ListStateData
 import com.chillingvan.samples.composevideo.main.model.VideoStateItemData
-import com.chillingvan.samples.composevideo.main.model.VideoState
 import com.chillingvan.samples.composevideo.video.CoreVideoView
 import com.chillingvan.samples.composevideo.video.rememberFullScreenController
 import com.chillingvan.samples.composevideo.core.navigation.VideoDetailNavParam
+import com.chillingvan.samples.composevideo.video.VideoState
 import java.net.URLEncoder
 
 private const val TAG = "MainPageScreen"

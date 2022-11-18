@@ -28,4 +28,5 @@ dependencies {
     implementation(libs.exoplayer)
 
     implementation(libs.androidx.compose.material3.windowSizeClass)
+    implementation(libs.accompanist.viewpager)
 }

@@ -14,4 +14,11 @@ interface CoreVideoPlayer {
     fun release()
 }
 
-data class PlayParam(val vid: Long, val url: String)
+data class PlayParam(val vid: Long, val url: String, val replayIfEnd: Boolean = false)
+
+sealed class VideoState {
+    object Playing : VideoState()
+    object Pausing : VideoState()
+    object Released : VideoState()
+}
+
