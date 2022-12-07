@@ -140,6 +140,7 @@ private fun DetailPager(onPageChange: (Int) -> Unit, onBackClick: () -> Unit) {
             state = pagerState,
             count = dataList.size
         ) { page ->
+            // Use Data to render the item view
             val itemData = dataList[page]
             DetailItem(
                 modifier = Modifier,
@@ -170,6 +171,7 @@ private fun DetailItem(
                 .aspectRatio(16 / 9f)
         ) {
             if (coreVideoPlayer != null) {
+                // The view of video playing
                 val fullScreenController = rememberFullScreenController()
                 CoreVideoView(coreVideoPlayer = coreVideoPlayer)
                 val playControlViewModel = hiltViewModel<PlayControlViewModel>()
@@ -182,6 +184,7 @@ private fun DetailItem(
                         fullScreenController.toFull()
                     })
             } else {
+                // An idle view if it is not playing
                 Text(
                     text = "Waiting",
                     style = MaterialTheme.typography.titleMedium,
@@ -193,6 +196,7 @@ private fun DetailItem(
                 )
             }
         }
+        // Show title
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
@@ -203,6 +207,7 @@ private fun DetailItem(
                 .padding(10.dp)
         )
         detailData?.let {
+            // Show description
             Text(
                 text = it.description,
                 style = MaterialTheme.typography.bodyMedium,
