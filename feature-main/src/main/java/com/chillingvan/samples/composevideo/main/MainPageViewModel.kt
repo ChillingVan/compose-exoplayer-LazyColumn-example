@@ -1,7 +1,6 @@
 package com.chillingvan.samples.composevideo.main
 
 import android.util.Log
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.chillingvan.samples.composevideo.main.model.ListStateData
@@ -9,7 +8,6 @@ import com.chillingvan.samples.composevideo.main.model.VideoStateItemData
 import com.chillingvan.samples.composevideo.main.model.VideoItemsRepository
 import com.chillingvan.samples.composevideo.video.CoreVideoPlayer
 import com.chillingvan.samples.composevideo.video.PlayParam
-import com.chillingvan.samples.composevideo.video.VideoSingleton
 import com.chillingvan.samples.composevideo.core.navigation.VideoDetailContinueData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -58,10 +56,6 @@ class MainPageViewModel @Inject constructor(
         mListLiveData.value = ListStateData(videoRepository.changeVideo(target, videoSingleton),
             (mListLiveData.value?.changeCnt ?: 0) + 1)
         play(PlayParam(target.vid, target.url))
-    }
-
-    fun bindVideoView(view: View) {
-        videoSingleton.bindVideoView(view)
     }
 
     fun findAndTryContinuePlayItem() {

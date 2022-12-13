@@ -49,6 +49,7 @@ fun VideoDetailRoute(
             onBackClick = onBackClick,
             onPageChange = { page ->
                 videoDetailViewModel.changePlayingItem(page)
+                videoDetailViewModel.prepareNext()
             }
         )
     } else {

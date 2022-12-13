@@ -12,6 +12,8 @@ interface CoreVideoPlayer {
     fun resume()
     fun pause()
     fun release()
+    fun prepareNotCurrent(playParam: PlayParam)
+    fun clearVideoView()
 }
 
 data class PlayParam(val vid: Long, val url: String, val replayIfEnd: Boolean = false)

@@ -1,12 +1,8 @@
 package com.chillingvan.samples.composevideo.video
 
 import android.app.Application
-import android.util.Log
 import android.view.View
 import androidx.collection.LruCache
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
@@ -20,105 +16,143 @@ import kotlin.coroutines.EmptyCoroutineContext
  * Created by Chilling on 2022/8/1.
  */
 @Singleton
-class VideoSingleton  @Inject constructor(
+class VideoSingleton @Inject constructor(
     private val application: Application
-): CoreVideoPlayer {
+) : CoreVideoPlayer {
 
     companion object {
         private const val TAG = "VideoSingleton"
+        private const val POOL_SIZE = 2;
     }
 
-    private var exoPlayer = createPlayer(application)
+    // POOL_SIZE = 2
+    private val mPlayerPool = mutableListOf<PlayerController>()
+    private var mCurrentPlayer: PlayerController = PlayerController(application)
+    init {
+        mPlayerPool.add(mCurrentPlayer)
+        mPlayerPool.add(PlayerController(application))
+    }
 
-    private fun createPlayer(application: Application) =
-        ExoPlayer.Builder(application.applicationContext).build()
-
-    private var mPlayerView: View? = null
+    private val mListenerList = mutableListOf<Player.Listener>()
     private val mPositionRecorder = PositionRecorder(this)
-    private var mIsReleased = false
 
     init {
-        exoPlayer.addListener(object : Player.Listener {
-
-            override fun onEvents(player: Player, events: Player.Events) {
-                super.onEvents(player, events)
-                Log.i(TAG, "onEvents:${events.get(0)}; position=${player.currentPosition}")
-            }
-
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                super.onMediaItemTransition(mediaItem, reason)
-                Log.i(TAG, "onMediaItemTransition:mediaId=${mediaItem?.mediaId};position=${exoPlayer.currentPosition};reason=$reason;")
-            }
-
-            override fun onPlayerError(error: PlaybackException) {
-                super.onPlayerError(error)
-                Log.i(TAG, "onPlayerError:error=${error.errorCodeName}; position=${exoPlayer.currentPosition}")
-            }
-        })
         mPositionRecorder.progressRecordStart()
     }
 
     override fun play(playParam: PlayParam) {
-        if (mIsReleased) {
-            mIsReleased = false
-            exoPlayer = createPlayer(application)
-        }
-        val mediaItem = MediaItem.Builder()
-            .setUri(playParam.url)
-            .setMediaId(playParam.vid.toString())
-            .build()
-        if (exoPlayer.currentMediaItem?.mediaId == mediaItem.mediaId) {
+        val vid = playParam.vid
+        if (mCurrentPlayer.getCurrentMediaId() == vid.toString()) {
+            // Avoid play the same, do resume instead
+            resume()
             return
         }
-        exoPlayer.setMediaItem(mediaItem)
-//        exoPlayer.release()
-        exoPlayer.prepare()
-        exoPlayer.play()
-        val progress = mPositionRecorder.getProgress(mediaItem.mediaId)
-        if (playParam.replayIfEnd && progress >= mPositionRecorder.getDuration(mediaItem.mediaId) - 1000) {
-            exoPlayer.seekTo(0)
+        val playOne = if (mPlayerPool.size == 0) {
+            mCurrentPlayer
         } else {
-            exoPlayer.seekTo(progress.toLong())
+            getReadyPlayerFromPool(vid) ?: mCurrentPlayer
+        }
+        mCurrentPlayer = playOne
+        stopAllOthers()
+        for (listener in mListenerList) {
+            playOne.addListener(listener)
+        }
+        playOne.play(playParam, object : PlayerController.PositionProvider {
+            override fun getPosition(mediaId: String): Long {
+                return mPositionRecorder.getProgress(mediaId).toLong()
+            }
+
+            override fun getDuration(mediaId: String): Long {
+                return mPositionRecorder.getDuration(mediaId)
+            }
+        })
+    }
+
+    private fun getReadyPlayerFromPool(vid: Long): PlayerController? {
+        for (videoController in mPlayerPool) {
+            if (videoController.getCurrentMediaId() == vid.toString()) {
+                return videoController
+            }
+        }
+        return null
+    }
+
+    private fun acquireNotPlayOneFromPool(): PlayerController? {
+        val entries = mPlayerPool
+        for (entry in entries) {
+            if (entry !== mCurrentPlayer) {
+                return entry
+            }
+        }
+        return null
+    }
+
+    private fun stopAllOthers() {
+        for (entry in mPlayerPool) {
+            if (entry !== mCurrentPlayer) {
+                entry.stop()
+                for (listener in mListenerList) {
+                    entry.removeListener(listener)
+                }
+            }
         }
     }
 
     override fun resume() {
-        if (mPlayerView != null) {
-            exoPlayer.playWhenReady = true
-        }
+        mCurrentPlayer.resume()
     }
 
     override fun pause() {
-        exoPlayer.playWhenReady = false
+        mCurrentPlayer.pause()
     }
 
     override fun release() {
-        exoPlayer.release()
-        mIsReleased = true
+        for (player in mPlayerPool) {
+            player.release()
+        }
     }
 
-    override fun getPlayer(): Player = exoPlayer
+    override fun prepareNotCurrent(playParam: PlayParam) {
+        acquireNotPlayOneFromPool()?.let {
+            if (it.getCurrentMediaId() == playParam.vid.toString()) {
+                // Avoid prepare a prepared one, such as the stopped one.
+                return
+            }
+            it.prepare(playParam)
+        }
+    }
+
+    override fun getPlayer(): Player {
+        return mCurrentPlayer.getPlayer()
+    }
 
     override fun bindVideoView(view: View?) {
-        Log.i("VideoSingleton", "bindVideoView:$view")
-        mPlayerView = view
+        mCurrentPlayer.bindVideoView(view)
     }
 
-    fun getPlayerView() = mPlayerView
+    override fun clearVideoView() {
+        for (player in mPlayerPool) {
+            player.bindVideoView(null)
+        }
+    }
 
-    fun progressChangeFlow() = flow<Int> {
+    private fun progressChangeFlow() = flow<Int> {
         while (true) {
-            emit(exoPlayer?.currentPosition?.toInt()!!)
+            emit(mCurrentPlayer.getCurPosition().toInt())
             delay(500)
         }
     }.flowOn(Dispatchers.Main)
 
     fun addListener(listener: Player.Listener) {
-        exoPlayer.addListener(listener)
+        mListenerList.add(listener)
+        mCurrentPlayer.addListener(listener)
     }
 
     fun removeListener(listener: Player.Listener) {
-        exoPlayer.removeListener(listener)
+        for (l in mListenerList) {
+            mCurrentPlayer.removeListener(l)
+        }
+        mListenerList.remove(listener)
     }
 
     private class PositionRecorder(private val player: VideoSingleton) {
@@ -135,8 +169,10 @@ class VideoSingleton  @Inject constructor(
         fun progressRecordStart() {
             PositionRecorderScope.launch(Dispatchers.Main) {
                 player.progressChangeFlow().collect { progress ->
-                    player.exoPlayer.currentMediaItem?.let {
-                        mCache.put(it.mediaId, ProgressData(progress, player.exoPlayer.duration))
+                    player.mCurrentPlayer.let { videoController ->
+                        videoController.getCurrentMediaId()?.let {
+                            mCache.put(it, ProgressData(progress, videoController.getDuration()))
+                        }
                     }
                 }
             }

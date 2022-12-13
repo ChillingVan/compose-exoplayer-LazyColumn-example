@@ -53,10 +53,27 @@ class VideoDetailViewModel @Inject constructor(
         play(PlayParam(mVid, mUrl))
         mVideoDetailRepository.initPlayingItem(mVid, videoSingleton)
         mListLiveData.value = VideoDetailListStateData(mVideoDetailRepository.getDataList(), 0)
+        prepareNext()
     }
 
     private fun play(playParam: PlayParam) {
         videoSingleton.play(playParam)
+    }
+
+    // First Frame from 1500ms -> 200ms
+    fun prepareNext() {
+        val dataList = mVideoDetailRepository.getDataList()
+        var nextOne: VideoDetailItemData? = null
+        for ((index, videoDetailItemData) in dataList.withIndex()) {
+            val isLastOne = index == dataList.size - 1
+            if (videoDetailItemData.player != null && !isLastOne) {
+                nextOne = dataList[index + 1]
+                break
+            }
+        }
+        nextOne?.let { itemData ->
+            videoSingleton.prepareNotCurrent(PlayParam(itemData.vid, itemData.url, replayIfEnd = true))
+        }
     }
 
     fun resume() {
@@ -86,14 +103,14 @@ class VideoDetailViewModel @Inject constructor(
         val itemData: VideoDetailItemData = mVideoDetailRepository.getDataList()[page]
         mVideoDetailRepository.recreateList()
         mVideoDetailRepository.initPlayingItem(itemData.vid, videoSingleton)
-        mListLiveData.value = VideoDetailListStateData(mVideoDetailRepository.getDataList(), (mListLiveData.value?.changeCnt ?: 0) + 1)
         play(PlayParam(itemData.vid, itemData.url, replayIfEnd = true))
+        mListLiveData.value = VideoDetailListStateData(mVideoDetailRepository.getDataList(), (mListLiveData.value?.changeCnt ?: 0) + 1)
     }
 
     override fun onCleared() {
         super.onCleared()
         Log.i(TAG, "onCleared")
-        videoSingleton.bindVideoView(null)
+        videoSingleton.clearVideoView()
         mVideoDetailRepository.getDataList().find { it.state == VideoState.Playing }?.let {
             VideoDetailContinueData.produce(VideoDetailContinueData.ContinueData(it.vid))
         }

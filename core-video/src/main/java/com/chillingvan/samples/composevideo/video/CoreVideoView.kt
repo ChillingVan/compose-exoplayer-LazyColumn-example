@@ -18,6 +18,7 @@ fun CoreVideoView(modifier: Modifier = Modifier,
     AndroidView(
         factory = { context ->
             StyledPlayerView(context).also { playerView ->
+                Log.i("CoreVideoView", "create")
                 playerView.useController = false
                 playerView.controllerAutoShow = false
                 playerView.setShowNextButton(false)
